@@ -1,14 +1,21 @@
 package com.hotelgestion;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Data
+import java.util.List;
+
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode
 public abstract class Room {
     private int id;
     private int num;
     private double basePrice;
-    private int numbreOfBed;
+    private int numberOfBed;
     private boolean available;
+    private List<Furniture> furnitures;
 
     public abstract double getRealPrice();
 }
