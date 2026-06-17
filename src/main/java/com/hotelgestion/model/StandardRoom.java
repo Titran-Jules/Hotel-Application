@@ -1,17 +1,16 @@
 package com.hotelgestion.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Getter
 public class StandardRoom extends Room {
-    public StandardRoom(int id, int num, double basePrice, int numberOfBed, boolean available, List<Furniture> furnitures) {
-        super(id, num, basePrice, numberOfBed, available, furnitures);
-    }
-
     @Override
-    public double getRealPrice() {
+    public double calculateActualPrice() {
         return this.getBasePrice();
     }
 }

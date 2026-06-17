@@ -1,21 +1,39 @@
 package com.hotelgestion.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode
 public abstract class Room {
     private int id;
-    private int num;
+    private String roomNumber;
     private double basePrice;
-    private int numberOfBed;
-    private boolean available;
-    private List<Furniture> furnitures;
+    private int bedCount;
+    private RoomStatus status;
+    private List<Amenity> amenities;
 
-    public abstract double getRealPrice();
+    protected static final double TAX_RATE = 0.20;
+
+    public abstract double calculateActualPrice();
+
+    public void addAmenity(Amenity a) {
+        amenities.add(a);
+    }
+
+    public void removeAmenity(Amenity a) {
+        amenities.remove(a);
+    }
+
+    public boolean isAvailable() {
+        return this.status.equals(RoomStatus.AVAILABLE);
+    }
+
+    public void changesStatus(RoomStatus s) {
+        this.status = s;
+    }
 }
