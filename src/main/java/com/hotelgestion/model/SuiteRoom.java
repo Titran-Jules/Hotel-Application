@@ -1,22 +1,20 @@
 package com.hotelgestion.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Getter
 @Setter
 public class SuiteRoom extends Room {
-    private int numberOfRoom;
-    private boolean jacouzi;
+    private int roomCount;
 
-    public SuiteRoom(int id, int num, double basePrice, int numberOfBed, boolean available, List<Furniture> furnitures) {
-        super(id, num, basePrice, numberOfBed, available, furnitures);
-    }
 
     @Override
-    public double getRealPrice() {
-        return isJacouzi() ? getBasePrice() + (50*numberOfRoom) + (100) : getBasePrice() + (50*numberOfRoom);
+    public double calculateActualPrice() {
+        return (this.getBasePrice() + this.getRoomCount() * 20000) * (1 + TAX_RATE);
     }
 }
