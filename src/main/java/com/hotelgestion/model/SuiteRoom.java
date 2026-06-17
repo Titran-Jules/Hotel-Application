@@ -1,4 +1,4 @@
-package com.hotelgestion;
+package com.hotelgestion.model;
 
 import lombok.Getter;
 import lombok.Setter;
