@@ -6,9 +6,7 @@ import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-
 public class Guest {
-
     private int id;
     private String name;
     private String phone;
