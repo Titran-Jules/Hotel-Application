@@ -1,13 +1,9 @@
 package com.hotelgestion;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@AllArgsConstructor
-@Getter
-@EqualsAndHashCode
+@NoArgsConstructor
+@Data
 public abstract class Employee {
     private int id;
     private String name;
