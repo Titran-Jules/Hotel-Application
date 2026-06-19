@@ -1,9 +1,12 @@
 package com.hotelgestion.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public abstract class Employee {
     private int id;
     private String name;

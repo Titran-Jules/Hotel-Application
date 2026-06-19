@@ -1,17 +1,15 @@
 package com.hotelgestion.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@SuperBuilder
+@Getter
+@Setter
 public class Guard extends Employee{
     private String patrolZone;
     private List<DayGuard> dayGuards = new ArrayList<>();

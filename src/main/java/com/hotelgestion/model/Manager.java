@@ -1,11 +1,15 @@
 package com.hotelgestion.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@SuperBuilder
+@Setter
 @Getter
 public class Manager extends Employee {
     private final List<Employee> employees = new ArrayList<>();

@@ -8,5 +8,7 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode
 public class Amenity {
+    private int id;
     private String name;
+    private double additionalCost;
 }
