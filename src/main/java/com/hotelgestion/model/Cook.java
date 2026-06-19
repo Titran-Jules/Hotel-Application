@@ -7,15 +7,15 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Getter
 @Setter
-public class Cleaner extends Employee {
-    private double efficacity;
-
-    public String cleanUp() {
-        return "I cleaned up";
-    }
+public class Cook extends Employee {
+    private String speciality;
 
     @Override
     public double calculateRealSalary() {
-        return getSalary() * efficacity;
+        return this.getSalary() * 1.10;
+    }
+
+    public void prepareDish(Dish d) {
+        System.out.println("I prepare : "+d.getName());
     }
 }
