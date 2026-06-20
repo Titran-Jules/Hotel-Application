@@ -16,6 +16,6 @@ public class SuiteRoom extends Room {
 
     @Override
     public double calculateActualPrice() {
-        return (this.getBasePrice() + this.getRoomCount() * 20000) * (1 + TAX_RATE) + this.amenityTotalCost();
+        return (this.getBasePrice() + this.getRoomCount() * 20000) + this.amenityTotalCost();
     }
 }
