@@ -19,8 +19,6 @@ public abstract class Room {
     private RoomStatus status;
     private List<Amenity> amenities;
 
-    protected static final double TAX_RATE = 0.20;
-
     public abstract double calculateActualPrice();
 
     public void addAmenity(Amenity a) {
