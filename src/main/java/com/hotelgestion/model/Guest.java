@@ -12,7 +12,9 @@ public class Guest {
     private String phone;
     private String email;
 
-    public Reservation book(Room r, LocalDate startDate, LocalDate endDate) {
-        return new Reservation(0, this, r, startDate, endDate, ReservationStatus.PENDING, 0.0);
+    public Reservation book(int reservationId, Room r, LocalDate startDate, LocalDate endDate) {
+        Reservation reservation = new Reservation(reservationId, this, r, startDate, endDate, ReservationStatus.PENDING, 0.0);
+        reservation.setTotalPrice(reservation.calculateTotalPrice());
+        return reservation;
     }
 }
