@@ -1,18 +1,16 @@
 package com.hotelgestion.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@AllArgsConstructor
-@Data
+@SuperBuilder
 @Getter
 @Setter
+@EqualsAndHashCode
 public class DayGuard {
     private LocalTime startTime;
     private LocalTime endTime;
