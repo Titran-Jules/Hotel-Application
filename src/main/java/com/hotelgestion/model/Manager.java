@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @Getter
 public class Manager extends Employee {
-    private final List<Employee> employees = new ArrayList<>();
+    private List<Employee> employees = new ArrayList<>();
 
     public String giveOrder() {
         return "I need you to clean the room buddy";
