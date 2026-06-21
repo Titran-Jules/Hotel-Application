@@ -13,6 +13,7 @@ import java.util.List;
 @EqualsAndHashCode
 public abstract class Room {
     private int id;
+    private int hotelId;
     private String roomNumber;
     private double basePrice;
     private int bedCount;

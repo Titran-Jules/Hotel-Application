@@ -12,6 +12,8 @@ public abstract class Employee {
     private String name;
     private String phoneNumber;
     private double salary;
+    private int hotelId;
+    private int managerId;
 
     public abstract double calculateRealSalary();
 }

@@ -1,11 +1,14 @@
 package com.hotelgestion.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
+
 import java.time.LocalDate;
 
-@Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Guest {
     private int id;
     private String name;
