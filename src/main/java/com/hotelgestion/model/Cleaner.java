@@ -10,8 +10,8 @@ import lombok.experimental.SuperBuilder;
 public class Cleaner extends Employee {
     private double efficacity;
 
-    public String cleanUp() {
-        return "I cleaned up";
+    public void clean(Room r) {
+        r.changesStatus(RoomStatus.CLEANING);
     }
 
     @Override

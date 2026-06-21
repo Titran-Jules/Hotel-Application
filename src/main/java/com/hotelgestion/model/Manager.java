@@ -22,4 +22,21 @@ public class Manager extends Employee {
     public double calculateRealSalary() {
         return getSalary() + (getEmployees().size() * 100);
     };
+
+    public boolean validateReservation(Reservation r) {
+        if (r.getStatus().equals(ReservationStatus.PENDING)) {
+            r.setStatus(ReservationStatus.CONFIRMED);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void orderCleaning(Cleaner c, Room r) {
+        c.clean(r);
+    }
+
+    public void addTeamMember(Employee e) {
+        employees.add(e);
+    }
 }
