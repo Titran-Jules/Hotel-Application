@@ -16,6 +16,6 @@ public class Cook extends Employee {
     }
 
     public void prepareDish(Dish d) {
-        System.out.println("I prepare : "+d.getName());
+        d.getRequiredIngredients().forEach((key, value) -> key.decreaseStock(value));
     }
 }

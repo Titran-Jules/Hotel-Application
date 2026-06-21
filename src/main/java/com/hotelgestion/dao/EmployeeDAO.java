@@ -96,6 +96,21 @@ public class EmployeeDAO implements GenericDAO<Employee, Integer> {
         return employees;
     }
 
+    public List<Employee> findByHotelId(int hotelId) {
+        String sql = "SELECT * FROM employee WHERE hotel_id = ?";
+        List<Employee> employees = new ArrayList<>();
+        Connection conn = DatabaseConnection.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, hotelId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) employees.add(mapRow(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la récupération des employés à l'hôtel :"+hotelId, e);
+        }
+        return employees;
+    }
+
     @Override
     public boolean update(Employee emp) {
         String sql = """
@@ -124,7 +139,7 @@ public class EmployeeDAO implements GenericDAO<Employee, Integer> {
                 stmt.setNull(5, Types.VARCHAR);
                 stmt.setString(6, cook.getSpeciality());
                 stmt.setNull(7, Types.NUMERIC);
-            } else { // Manager
+            } else {
                 stmt.setNull(4, Types.NUMERIC);
                 stmt.setNull(5, Types.VARCHAR);
                 stmt.setNull(6, Types.VARCHAR);
@@ -230,7 +245,7 @@ public class EmployeeDAO implements GenericDAO<Employee, Integer> {
             }
             case "CLEANER" -> {
                 Cleaner cleaner = Cleaner.builder().build();
-                cleaner.setEfficacity(rs.getDouble("efficiency"));
+                cleaner.setEfficacity(rs.getDouble("efficacity"));
                 emp = cleaner;
             }
             case "GUARD" -> {
