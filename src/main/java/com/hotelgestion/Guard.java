@@ -29,6 +29,6 @@ public class Guard extends Employee{
     }
 
     public void performPatrol() {
-        System.out.println(getName() + " is performing Patrol at " + getPatrolZone());
+        System.out.println(getName() + " is performing patrol at " + getPatrolZone());
     }
 }
