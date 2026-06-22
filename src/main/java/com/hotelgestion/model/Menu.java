@@ -1,14 +1,12 @@
 package com.hotelgestion.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -16,6 +14,7 @@ public class Menu {
     private int id;
     private String name;
     private List<Dish> dishes;
+    private int hotelId;
 
     public void addDish(Dish d) {
         dishes.add(d);

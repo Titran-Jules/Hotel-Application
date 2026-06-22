@@ -1,23 +1,24 @@
 package com.hotelgestion.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+import javax.naming.InsufficientResourcesException;
 import java.util.List;
 
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
 public abstract class Room {
     private int id;
+    private int hotelId;
     private String roomNumber;
     private double basePrice;
     private int bedCount;
     private RoomStatus status;
     private List<Amenity> amenities;
-
-    protected static final double TAX_RATE = 0.20;
 
     public abstract double calculateActualPrice();
 
@@ -27,6 +28,16 @@ public abstract class Room {
 
     public void removeAmenity(Amenity a) {
         amenities.remove(a);
+    }
+
+    public double amenityTotalCost() {
+        if (!amenities.isEmpty()) {
+            return amenities.stream()
+                .mapToDouble(Amenity::getAdditionalCost)
+                .sum();
+        } else {
+            return 0;
+        }
     }
 
     public boolean isAvailable() {

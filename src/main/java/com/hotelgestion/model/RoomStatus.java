@@ -2,7 +2,7 @@ package com.hotelgestion.model;
 
 public enum RoomStatus {
     AVAILABLE,
-    OCCUPED,
+    OCCUPIED,
     CLEANING,
     OUT_OF_SERVICE
 }
