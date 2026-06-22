@@ -14,6 +14,7 @@ public class RestaurantOrderDAO implements GenericDAO<RestaurantOrder, Integer> 
     private final DishDAO dishDAO = new DishDAO();
     private final RoomDAO roomDAO = new RoomDAO();
     private final EmployeeDAO employeeDAO = new EmployeeDAO();
+    private final GuestDAO guestDAO = new GuestDAO();
 
     @Override
     public RestaurantOrder create(RestaurantOrder order) {
@@ -164,8 +165,8 @@ public class RestaurantOrderDAO implements GenericDAO<RestaurantOrder, Integer> 
     }
 
     private RestaurantOrder mapRow(ResultSet rs) throws SQLException {
-        Guest guest = new Guest(); guest.setId(rs.getInt("guest_id"));
-
+        int guestId = rs.getInt("guest_id");
+        Guest guest = guestDAO.findById(guestId).orElse(null);
         int roomId = rs.getInt("room_id");
         Room room = rs.wasNull() ? null : roomDAO.findById(roomId).orElse(null);
 

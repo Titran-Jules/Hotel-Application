@@ -20,7 +20,8 @@ public class Manager extends Employee {
 
     @Override
     public double calculateRealSalary() {
-        return getSalary() + (getEmployees().size() * 100);
+        int nbSubordonnes = (this.employees != null) ? this.employees.size() : 0;
+        return getSalary() + (nbSubordonnes * 25000);
     };
 
     public boolean validateReservation(Reservation r) {

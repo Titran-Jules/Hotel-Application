@@ -47,6 +47,7 @@ public class PaymentService {
             } catch (Exception e) {
                 conn.rollback();
                 payment.fail();
+                paymentDAO.create(payment);
                 throw new PaymentFailedException("Le processus de paiement a échoué. Transaction annulée.", e);
             } finally {
                 conn.setAutoCommit(true);

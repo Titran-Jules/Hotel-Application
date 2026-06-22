@@ -168,4 +168,22 @@ public class ReservationDAO implements GenericDAO<Reservation, Integer> {
                 rs.getDouble("total_price")
         );
     }
+
+    public List<Reservation> findByStatus(ReservationStatus reservationStatus) {
+        String sql = "SELECT * FROM reservation WHERE status = ?";
+        List<Reservation> reservations = new ArrayList<>();
+        Connection conn = DatabaseConnection.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, reservationStatus.name());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    reservations.add(mapRow(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche des réservations avec le statut " + reservationStatus, e);
+        }
+        return reservations;
+    }
 }
