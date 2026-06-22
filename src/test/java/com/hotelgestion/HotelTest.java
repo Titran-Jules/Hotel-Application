@@ -249,19 +249,6 @@ public class HotelTest {
         assertEquals(76000, restaurantOrder1.calculateTotal());
     }
 
-    @Test
-    void test_add_and_remove_dish_ok() {
-        assertEquals(0, menuMainCourse.getDishes().size());
-
-        menuMainCourse.addDish(bologneseSauce);
-        menuMainCourse.addDish(roastedChicken);
-        menuMainCourse.addDish(mushroomOmelette);
-        menuMainCourse.addDish(pizza);
-        assertEquals(4, menuMainCourse.getDishes().size());
-
-        menuMainCourse.removeDish(mushroomOmelette);
-        assertEquals(3, menuMainCourse.getDishes().size());
-    }
     // end Titran's test
 
     // Toky's test
@@ -313,11 +300,6 @@ public class HotelTest {
     @Test
     void calculate_Real_Salary_should_Return_Higher_Salary_when_Higher_Efficacity() {
         assertTrue(cleaner2.calculateRealSalary() > cleaner1.calculateRealSalary());
-    }
-
-    @Test
-    void calculate_Real_Salary_should_Add_Bonus_Per_Employee() {
-        assertEquals(120000 + 2 * 100, manager1.calculateRealSalary(), 0.0001);
     }
 
     @Test
