@@ -67,6 +67,12 @@ public class HotelTest {
     private Guest guest3;
     private Guest guest4;
 
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+
+
+
     @BeforeEach
     void setup() {
         wifi = new Amenity(1, "WI-FI", 10000);
@@ -201,8 +207,8 @@ public class HotelTest {
         mushroomOmelette = new Dish(3, "Mushroom Omelette", 12000, DishCategory.STARTER, 15, Map.of(egg, 6d, mushroom, 0.15d, butter, 0.02d, salt, 0.005d, pepper, 0.002d));
         bologneseSauce = new Dish(4, "Bolognese Sauce", 18000, DishCategory.MAIN_COURSE, 30, Map.of(beef, 0.5d, tomato, 6d, onion, 2d, garlic, 2d, oliveOil, 0.05d));
 
-        menuMainCourse = new Menu(1, "Main Course", new ArrayList<>());
-        menuStarter = new Menu(2, "Starter", new ArrayList<>());
+       /* menuMainCourse = new Menu(1, "Main Course", new ArrayList<>());
+        menuStarter = new Menu(2, "Starter", new ArrayList<>());*/
 
         hotel = new Hotel(1, "SingleTon Hotel", "Ivandry", List.of(standardRoom1, standardRoom2, suiteRoom1, suiteRoom2), List.of(cleaner1, cleaner2, guard1, cook1, cook2, manager1, manager2));
 
@@ -210,6 +216,8 @@ public class HotelTest {
         guest2 = new Guest(2, "Andriamandresy Lisa Princia", "038 00 230 44", "lisaprincia@gmail.com");
         guest3 = new Guest(3, "Bourdier LeGrand", "032 44 322 99", "legrand@gmail.com");
         guest4 = new Guest(4, "Rabearivony Sahinnah", "034 88 543 81", "sahinna@gmail.com");
+
+
     }
 
     // Titran's test
@@ -249,6 +257,68 @@ public class HotelTest {
     // end Toky's test
 
     // Manda's test
+    @Test
+    void book_shouldReturnReservationWithCorrectId() {
+        Reservation res = new Reservation(5, guest1, standardRoom1, startDate, endDate, ReservationStatus.PENDING, 0.0);
+        assertEquals(5, res.getId());
+    }
+
+    @Test
+    void calculateActualPrice_standardRoom1_2nights() {
+        var res = guest1.book(standardRoom1,
+                LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 3));
+        assertEquals(70000.0, res.getTotalPrice());
+    }
+
+    @Test
+    void calculateTotalPrice_standardRoom1_2nights() {
+        var res = guest1.book(standardRoom1,
+                LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 3));
+        assertEquals(70000.0, res.getTotalPrice());
+    }
+
+    @Test
+    void calculateTotalPrice_suiteRoom1_2nights() {
+        var res = guest1.book(suiteRoom1,
+                LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 3));
+        assertEquals(374000.0, res.getTotalPrice());
+    }
+
+    @Test
+    void calculateNumberOfNights() {
+        Reservation res = new Reservation(0, guest1, standardRoom1,
+                LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 5), ReservationStatus.PENDING, 0.0);
+        assertEquals(4, res.calculateNumberOfNights());
+    }
+
+    @Test
+    void book_shouldReturnReservationWithCorrectGuest() {
+        var res = guest4.book(standardRoom2,
+                LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 5));;
+        assertEquals(guest4, res.getGuest());
+    }
+
+    @Test
+    void book_shouldReturnReservationWithCorrectRoom() {
+        var res = guest2.book(standardRoom1,
+                LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 5));
+        assertEquals(standardRoom1, res.getRoom());
+    }
+
+    @Test
+    void confirm_shouldSetStatusToConfirmed() {
+        var res = new Reservation(1, guest1, standardRoom1, startDate, endDate, ReservationStatus.PENDING, 0.0);
+        res.confirm();
+        assertEquals(ReservationStatus.CONFIRMED, res.getStatus());
+    }
+
+
 
     // end Manda's test
 }

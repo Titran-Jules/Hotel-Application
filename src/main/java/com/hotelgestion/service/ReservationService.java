@@ -1,4 +1,4 @@
-package com.hotelgestion.service;
+/*package com.hotelgestion.service;
 
 import com.hotelgestion.dao.ReservationDAO;
 import com.hotelgestion.dao.RoomDAO;
@@ -88,4 +88,4 @@ public class ReservationService {
             throw new RuntimeException("Erreur transactionnelle lors de l'annulation", e);
         }
     }
-}
+}*/
