@@ -83,7 +83,7 @@ public class HotelTest {
                 .basePrice(20000)
                 .bedCount(2)
                 .status(RoomStatus.AVAILABLE)
-                .amenities(List.of(wifi, tV))
+                .amenities(new ArrayList<>(List.of(wifi, tV)))
                 .build();
 
         standardRoom2 = StandardRoom.builder()
@@ -92,7 +92,7 @@ public class HotelTest {
                 .basePrice(10000)
                 .bedCount(1)
                 .status(RoomStatus.AVAILABLE)
-                .amenities(List.of(tV))
+                .amenities(new ArrayList<>(List.of(tV)))
                 .build();
 
         suiteRoom1 = SuiteRoom.builder()
@@ -101,7 +101,7 @@ public class HotelTest {
                 .basePrice(60000)
                 .bedCount(4)
                 .status(RoomStatus.AVAILABLE)
-                .amenities(List.of(tV, wifi, jacouzi, coffeeMachine))
+                .amenities(new ArrayList<>(List.of(tV, wifi, jacouzi, coffeeMachine)))
                 .roomCount(4)
                 .build();
 
@@ -111,7 +111,7 @@ public class HotelTest {
                 .basePrice(50000)
                 .bedCount(4)
                 .status(RoomStatus.AVAILABLE)
-                .amenities(List.of(tV, wifi, coffeeMachine))
+                .amenities(new ArrayList<>(List.of(tV, wifi, coffeeMachine)))
                 .roomCount(4)
                 .build();
 
@@ -285,7 +285,7 @@ public class HotelTest {
         guard2.getDayGuards().add(dayGuard2);
         guard1.getDayGuards().add(dayGuard1);
 
-        // assertEquals(110000, guard1.calculateRealSalary(), 0.0001);
+
         assertEquals(120000 + 12 * 10000, guard2.calculateRealSalary(), 0.0001);
     }
 
@@ -343,6 +343,133 @@ public class HotelTest {
         manager2.removeTeamMember(cleaner1);
         assertEquals(sizeBefore - 1, manager2.getEmployees().size());
     }
+
+    @Test
+    void calculate_Actual_Price_with_Two_Amenities() {
+        assertEquals(35000.0, standardRoom1.calculateActualPrice(), 0.01);
+    }
+
+    @Test
+    void calculate_Actual_Price_with_One_Amenity() {
+        assertEquals(15000.0, standardRoom2.calculateActualPrice(), 0.01);
+    }
+
+    @Test
+    void calculate_Actual_Price_no_Amenities() {
+        standardRoom1.getAmenities().clear();
+        assertEquals(20000.0, standardRoom1.calculateActualPrice(), 0.01);
+    }
+
+    @Test
+    void amenity_Total_Cost_two_Amenities() {
+        assertEquals(15000.0, standardRoom1.amenityTotalCost(), 0.01);
+    }
+
+    @Test
+    void amenity_Total_Cost_one_Amenity() {
+        assertEquals(5000.0, standardRoom2.amenityTotalCost(), 0.01);
+    }
+
+    @Test
+    void amenity_Total_Cost_empty_List() {
+        standardRoom1.getAmenities().clear();
+        assertEquals(0.0, standardRoom1.amenityTotalCost(), 0.01);
+    }
+
+    @Test
+    void add_Amenity_increases_Size() {
+        var airConditioning = new Amenity(4, "Air Conditioning", 10000);
+        standardRoom1.addAmenity(airConditioning);
+
+        assertTrue(standardRoom1.getAmenities().contains(airConditioning));
+        assertEquals(3, standardRoom1.getAmenities().size());
+    }
+
+    @Test
+    void remove_Amenity_decreases_Size() {
+        standardRoom1.removeAmenity(wifi);
+
+        assertFalse(standardRoom1.getAmenities().contains(wifi));
+        assertEquals(1, standardRoom1.getAmenities().size());
+    }
+
+    @Test
+    void is_Available_when_Available() {
+        assertTrue(standardRoom1.isAvailable());
+    }
+
+    @Test
+    void is_Available_when_Occupied() {
+        standardRoom1.changesStatus(RoomStatus.OCCUPIED);
+        assertFalse(standardRoom1.isAvailable());
+    }
+
+    @Test
+    void changes_Status_updates_Status_standard_room() {
+        standardRoom1.changesStatus(RoomStatus.CLEANING);
+        assertEquals(RoomStatus.CLEANING, standardRoom1.getStatus());
+    }
+
+    @Test
+    void calculate_Actual_Price_suiteRoom1() {
+        assertEquals(187000.0, suiteRoom1.calculateActualPrice(), 0.01);
+    }
+
+    @Test
+    void calculate_Actual_Price_suiteRoom2() {
+        assertEquals(152000.0, suiteRoom2.calculateActualPrice(), 0.01);
+    }
+
+    @Test
+    void calculate_Actual_Price_zero_Room_Count() {
+        suiteRoom1.setRoomCount(0);
+        assertEquals(107000.0, suiteRoom1.calculateActualPrice(), 0.01);
+    }
+
+    @Test
+    void calculate_Actual_Price_noAmenities() {
+        suiteRoom1.getAmenities().clear();
+        assertEquals(140000.0, suiteRoom1.calculateActualPrice(), 0.01);
+    }
+
+    @Test
+    void amenity_Total_Cost_four_Amenities() {
+        assertEquals(47000.0, suiteRoom1.amenityTotalCost(), 0.01);
+    }
+
+    @Test
+    void amenity_Total_Cost_three_Amenities() {
+        assertEquals(22000.0, suiteRoom2.amenityTotalCost(), 0.01);
+    }
+
+    @Test
+    void get_Room_Count_returns_Initial_Value() {
+        assertEquals(4, suiteRoom1.getRoomCount());
+    }
+
+    @Test
+    void set_Room_Count_updates_Value() {
+        suiteRoom1.setRoomCount(6);
+        assertEquals(6, suiteRoom1.getRoomCount());
+    }
+
+    @Test
+    void is_Available_by_Default() {
+        assertTrue(suiteRoom1.isAvailable());
+    }
+
+    @Test
+    void is_Available_after_Out_Of_Service() {
+        suiteRoom1.changesStatus(RoomStatus.OUT_OF_SERVICE);
+        assertFalse(suiteRoom1.isAvailable());
+    }
+
+    @Test
+    void changes_Status_updates_Status_suite_room() {
+        suiteRoom2.changesStatus(RoomStatus.CLEANING);
+        assertEquals(RoomStatus.CLEANING, suiteRoom2.getStatus());
+    }
+
 
     // end Toky's test
 
