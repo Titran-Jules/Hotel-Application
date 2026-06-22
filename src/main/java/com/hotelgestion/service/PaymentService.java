@@ -23,7 +23,7 @@ public class PaymentService {
         this.reservationDAO = reservationDAO;
     }
 
-    public Payment processPayment(Reservation r, Double amount, PaymentMethode method) {
+    public Payment processPayment(Reservation r, PaymentMethode method) {
         var payment = new Payment(0, r, r.getTotalPrice(), method, PaymentStatus.PENDING, LocalDateTime.now());
 
         Connection conn = DatabaseConnection.getConnection();
@@ -31,7 +31,7 @@ public class PaymentService {
             conn.setAutoCommit(false);
             try {
                 payment.validate();
-                paymentDAO.update(payment);
+                payment = paymentDAO.create(payment);
 
                 var invoice = new Invoice(0, r, new ArrayList<>(), LocalDateTime.now(), r.getTotalPrice());
                 var mainLine = new InvoiceLine(0, "Séjour Chambre N° "+ r.getRoom().getRoomNumber() + " (" + r.calculateNumberOfNights() + " nuit(s)", r.getTotalPrice());
@@ -47,7 +47,7 @@ public class PaymentService {
             } catch (Exception e) {
                 conn.rollback();
                 payment.fail();
-                throw new PaymentFailedException("Le processus de paiement a échoué. Transaction annulée.");
+                throw new PaymentFailedException("Le processus de paiement a échoué. Transaction annulée.", e);
             } finally {
                 conn.setAutoCommit(true);
             }
