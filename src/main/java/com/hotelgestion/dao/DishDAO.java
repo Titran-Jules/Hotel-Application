@@ -116,7 +116,7 @@ public class DishDAO implements GenericDAO<Dish, Integer> {
 
     private void saveIngredients(Dish dish) throws SQLException {
         if (dish.getRequiredIngredients() == null) return;
-        String sql = "INSERT INTO dish_ingredient (dish_id, ingredient_id, quantity) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO dish_ingredient (dish_id, ingredient_id, quantity_needed) VALUES (?, ?, ?)";
         Connection conn = DatabaseConnection.getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             for (Map.Entry<Ingredient, Double> entry : dish.getRequiredIngredients().entrySet()) {
@@ -131,10 +131,10 @@ public class DishDAO implements GenericDAO<Dish, Integer> {
 
     private Map<Ingredient, Double> loadIngredientsForDish(int dishId) {
         String sql = """
-                SELECT i.*, di.quantity FROM ingredient i
-                JOIN dish_ingredient di ON di.ingredient_id = i.id
-                WHERE di.dish_id = ?
-                """;
+            SELECT i.*, di.quantity_needed AS quantity FROM ingredient i
+            JOIN dish_ingredient di ON di.ingredient_id = i.id
+            WHERE di.dish_id = ?
+            """;
         Map<Ingredient, Double> ingredients = new HashMap<>();
         Connection conn = DatabaseConnection.getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {

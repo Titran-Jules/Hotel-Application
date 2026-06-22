@@ -11,7 +11,7 @@ public class Cleaner extends Employee {
     private double efficacity;
 
     public void clean(Room r) {
-        r.changesStatus(RoomStatus.CLEANING);
+        r.changesStatus(RoomStatus.AVAILABLE);
     }
 
     @Override
