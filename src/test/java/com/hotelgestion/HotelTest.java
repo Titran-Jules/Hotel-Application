@@ -28,7 +28,9 @@ public class HotelTest {
     private Cleaner cleaner1;
     private Cleaner cleaner2;
     private Guard guard1;
+    private Guard guard2;
     private DayGuard dayGuard1;
+    private DayGuard dayGuard2;
     private Cook cook1;
     private Cook cook2;
     private Manager manager1;
@@ -139,10 +141,28 @@ public class HotelTest {
                 .bonusSalaryPerHour(5000)
                 .build();
 
+
+        guard2 = Guard.builder()
+                .id(4)
+                .name("John")
+                .phoneNumber("034 11 011 01")
+                .salary(120000)
+                .patrolZone("The Gate")
+                .dayGuards(new ArrayList<>())
+                .bonusSalaryPerHour(10000)
+                .build();
+
         dayGuard1 = DayGuard.builder()
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(22, 0))
                 .shiftHour(false)
+                .date(LocalDate.of(2026, 6, 23))
+                .build();
+
+        dayGuard2 = DayGuard.builder()
+                .startTime(LocalTime.of(10, 0))
+                .endTime(LocalTime.of(22, 0))
+                .shiftHour(true)
                 .date(LocalDate.of(2026, 6, 23))
                 .build();
 
@@ -167,7 +187,7 @@ public class HotelTest {
                 .name("Fanomezana")
                 .phoneNumber("038 04 200 04")
                 .salary(120000)
-                .employees(List.of(cook1, cook2))
+                .employees(new ArrayList<>(List.of(cook1, cook2)))
                 .build();
 
         manager2 = Manager.builder()
@@ -175,7 +195,7 @@ public class HotelTest {
                 .name("Fitiavana")
                 .phoneNumber("038 05 004 03")
                 .salary(120000)
-                .employees(List.of(cleaner1, cleaner2, guard1))
+                .employees(new ArrayList<>(List.of(cleaner1,cleaner2, guard1)))
                 .build();
 
         carot = new Ingredient(1, "Carot", 50, "kg", 30);
@@ -201,8 +221,8 @@ public class HotelTest {
         mushroomOmelette = new Dish(3, "Mushroom Omelette", 12000, DishCategory.STARTER, 15, Map.of(egg, 6d, mushroom, 0.15d, butter, 0.02d, salt, 0.005d, pepper, 0.002d));
         bologneseSauce = new Dish(4, "Bolognese Sauce", 18000, DishCategory.MAIN_COURSE, 30, Map.of(beef, 0.5d, tomato, 6d, onion, 2d, garlic, 2d, oliveOil, 0.05d));
 
-        menuMainCourse = new Menu(1, "Main Course", new ArrayList<>());
-        menuStarter = new Menu(2, "Starter", new ArrayList<>());
+        // menuMainCourse = new Menu(1, "Main Course", new ArrayList<>(), hotel.getId());
+        // menuStarter = new Menu(2, "Starter", new ArrayList<>(), hotel.getId());
 
         hotel = new Hotel(1, "SingleTon Hotel", "Ivandry", List.of(standardRoom1, standardRoom2, suiteRoom1, suiteRoom2), List.of(cleaner1, cleaner2, guard1, cook1, cook2, manager1, manager2));
 
@@ -245,6 +265,84 @@ public class HotelTest {
     // end Titran's test
 
     // Toky's test
+
+    @Test
+    void test_calculate_Real_Salary_should_Return_Base_Salary_when_No_Day_Guards() {
+        assertEquals(110000, guard1.calculateRealSalary(), 0.0001);
+        assertEquals(120000, guard2.calculateRealSalary(), 0.0001);
+    }
+
+    @Test
+    void test_calculate_Real_Salary_should_Return_Base_Salary_when_No_Shift_Hours() {
+        guard1.getDayGuards().add(dayGuard1);
+        guard2.getDayGuards().add(dayGuard2);
+        assertEquals(110000, guard1.calculateRealSalary(), 0.0001);
+        assertNotEquals(120000, guard2.calculateRealSalary(), 0.0);
+    }
+
+    @Test
+    void test_calculate_Real_Salary_should_Add_Bonus_when_Shift_Hours_Present() {
+        guard2.getDayGuards().add(dayGuard2);
+        guard1.getDayGuards().add(dayGuard1);
+
+        // assertEquals(110000, guard1.calculateRealSalary(), 0.0001);
+        assertEquals(120000 + 12 * 10000, guard2.calculateRealSalary(), 0.0001);
+    }
+
+    @Test
+    void calculate_Real_Salary_should_Return_Salary_Plus_Ten_Percent() {
+        assertEquals(130000 * 1.10, cook1.calculateRealSalary(), 0.0001);
+    }
+
+    @Test
+    void calculate_Real_Salary_should_Be_The_Same_for_Both_Cooks() {
+        assertEquals(cook1.calculateRealSalary(), cook2.calculateRealSalary(), 0.0001);
+    }
+
+    @Test
+    void get_Speciality_should_Return_Correct_Speciality() {
+        assertEquals("Dessert", cook1.getSpeciality());
+        assertEquals("Main course", cook2.getSpeciality());
+    }
+
+    @Test
+    void calculate_Real_Salary_should_Return_Salary_MultipliedBy_Efficacity() {
+        assertEquals(100000 * 60, cleaner1.calculateRealSalary(), 0.0001);
+    }
+
+    @Test
+    void calculate_Real_Salary_should_Return_Higher_Salary_when_Higher_Efficacity() {
+        assertTrue(cleaner2.calculateRealSalary() > cleaner1.calculateRealSalary());
+    }
+
+    @Test
+    void calculate_Real_Salary_should_Add_Bonus_Per_Employee() {
+        assertEquals(120000 + 2 * 100, manager1.calculateRealSalary(), 0.0001);
+    }
+
+    @Test
+    void calculate_Real_Salary_should_Scale_With_Team_Size() {
+        assertTrue(manager2.calculateRealSalary() > manager1.calculateRealSalary());
+    }
+
+    @Test
+    void give_Order_should_Return_Expected_Message() {
+        assertEquals("I need you to clean the room buddy", manager1.giveOrder());
+    }
+
+    @Test
+    void add_Team_Member_should_Increase_Team_Size() {
+        int sizeBefore = manager1.getEmployees().size();
+        manager1.addTeamMember(cleaner1);
+        assertEquals(sizeBefore + 1, manager1.getEmployees().size());
+    }
+
+    @Test
+    void removeTeamMember_shouldDecreaseTeamSize() {
+        int sizeBefore = manager2.getEmployees().size();
+        manager2.removeTeamMember(cleaner1);
+        assertEquals(sizeBefore - 1, manager2.getEmployees().size());
+    }
 
     // end Toky's test
 

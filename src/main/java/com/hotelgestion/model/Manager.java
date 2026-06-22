@@ -39,4 +39,8 @@ public class Manager extends Employee {
     public void addTeamMember(Employee e) {
         employees.add(e);
     }
+
+    public void removeTeamMember(Employee e) {
+        employees.remove(e);
+    }
 }
