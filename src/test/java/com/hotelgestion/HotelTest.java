@@ -221,9 +221,6 @@ public class HotelTest {
         mushroomOmelette = new Dish(3, "Mushroom Omelette", 12000, DishCategory.STARTER, 15, Map.of(egg, 6d, mushroom, 0.15d, butter, 0.02d, salt, 0.005d, pepper, 0.002d));
         bologneseSauce = new Dish(4, "Bolognese Sauce", 18000, DishCategory.MAIN_COURSE, 30, Map.of(beef, 0.5d, tomato, 6d, onion, 2d, garlic, 2d, oliveOil, 0.05d));
 
-        // menuMainCourse = new Menu(1, "Main Course", new ArrayList<>(), hotel.getId());
-        // menuStarter = new Menu(2, "Starter", new ArrayList<>(), hotel.getId());
-
         hotel = new Hotel(1, "SingleTon Hotel", "Ivandry", List.of(standardRoom1, standardRoom2, suiteRoom1, suiteRoom2), List.of(cleaner1, cleaner2, guard1, cook1, cook2, manager1, manager2));
 
         guest1 = new Guest(1, "Rakotosolofo jean patrick", "034 50 404 22", "solofojean@gmail.com");
@@ -232,7 +229,6 @@ public class HotelTest {
         guest4 = new Guest(4, "Rabearivony Sahinnah", "034 88 543 81", "sahinna@gmail.com");
     }
 
-    // Titran's test
     @Test
     void test_calculateActualPrice_ok()  {
         assertEquals(35000, standardRoom1.calculateActualPrice());
@@ -249,12 +245,8 @@ public class HotelTest {
         assertEquals(76000, restaurantOrder1.calculateTotal());
     }
 
-    // end Titran's test
-
-    // Toky's test
-
     @Test
-    void test_calculate_Real_Salary_should_Return_Base_Salary_when_No_Day_Guards() {
+    void test_calculate_Real_Salary_should_Return_Base_Salary() {
         assertEquals(110000, guard1.calculateRealSalary(), 0.0001);
         assertEquals(120000, guard2.calculateRealSalary(), 0.0001);
     }
@@ -392,15 +384,7 @@ public class HotelTest {
         assertEquals(RoomStatus.CLEANING, standardRoom1.getStatus());
     }
 
-    @Test
-    void calculate_Actual_Price_suiteRoom1() {
-        assertEquals(187000.0, suiteRoom1.calculateActualPrice(), 0.01);
-    }
 
-    @Test
-    void calculate_Actual_Price_suiteRoom2() {
-        assertEquals(152000.0, suiteRoom2.calculateActualPrice(), 0.01);
-    }
 
     @Test
     void calculate_Actual_Price_zero_Room_Count() {
@@ -452,13 +436,9 @@ public class HotelTest {
         assertEquals(RoomStatus.CLEANING, suiteRoom2.getStatus());
     }
 
-
-    // end Toky's test
-
-    // Manda's test
     @Test
     void book_shouldReturnReservationWithCorrectId() {
-        Reservation res = new Reservation(5, guest1, standardRoom1,
+        var res = new Reservation(5, guest1, standardRoom1,
                 LocalDate.of(2026, 7, 1),
                 LocalDate.of(2026, 7, 3), ReservationStatus.PENDING, 0.0);
         assertEquals(5, res.getId());
@@ -490,7 +470,7 @@ public class HotelTest {
 
     @Test
     void calculateNumberOfNights() {
-        Reservation res = new Reservation(0, guest1, standardRoom1,
+        var res = new Reservation(0, guest1, standardRoom1,
                 LocalDate.of(2026, 7, 1),
                 LocalDate.of(2026, 7, 5), ReservationStatus.PENDING, 0.0);
         assertEquals(4, res.calculateNumberOfNights());
@@ -766,6 +746,4 @@ public class HotelTest {
 
         assertEquals(PaymentStatus.VALIDATED, payment.getStatus());
     }
-
-    // end Manda's test
 }

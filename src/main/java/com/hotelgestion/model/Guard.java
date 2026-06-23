@@ -17,7 +17,6 @@ public class Guard extends Employee{
 
     @Override
     public double calculateRealSalary() {
-        double bonusSalaryPerShiftHour = 15.0;
         double bonusSalary = dayGuards.stream()
                 .filter(DayGuard::isShiftHour)
                 .mapToLong(DayGuard::getHoursWorked)
