@@ -19,7 +19,7 @@ public class DayGuard {
     private boolean shiftHour;
 
     public long getHoursWorked() {
-        Duration duration = Duration.between(startTime, endTime);
+        var duration = Duration.between(startTime, endTime);
         if (duration.isNegative()) {
             duration = duration.plusHours(24);
         }

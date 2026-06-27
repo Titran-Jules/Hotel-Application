@@ -298,7 +298,6 @@ public class Main {
                     } else {
                         System.out.println("\n--- DOSSIERS EN ATTENTE DE VALIDATION ---");
                         for (Reservation res : pendings) {
-                            // COHÉRENCE : Remplacement de € par Ar
                             System.out.printf("- ID: %d | Client: %s | Chambre: %s | Montant: %.2f Ar\n",
                                     res.getId(), res.getGuest().getName(), res.getRoom().getRoomNumber(), res.getTotalPrice());
                         }

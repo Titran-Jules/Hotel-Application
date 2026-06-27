@@ -26,7 +26,7 @@ public class ReservationService {
             throw new RoomUnavailableException("La chambre "+ room.getRoomNumber() + " n'est pas disponible du " + startDate + " au " + endDate);
         }
 
-        Reservation reservation = guest.book(room, startDate, endDate);
+        var reservation = guest.book(room, startDate, endDate);
         reservation.setTotalPrice(reservation.calculateTotalPrice());
 
         Connection conn = DatabaseConnection.getConnection();
@@ -52,7 +52,7 @@ public class ReservationService {
     }
 
     public void validateReservation(int reservationId, Manager manager) {
-        Reservation reservation = reservationDAO.findById(reservationId)
+        var reservation = reservationDAO.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Réservation introuvable : "+ reservationId));
 
         boolean validated = manager.validateReservation(reservation);
@@ -63,7 +63,7 @@ public class ReservationService {
     }
 
     public void cancelReservation(int reservationId) {
-        Reservation reservation = reservationDAO.findById(reservationId)
+        var reservation = reservationDAO.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Réservation introuvble : "+ reservationId));
 
         Connection conn = DatabaseConnection.getConnection();
