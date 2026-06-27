@@ -30,7 +30,7 @@ public class RestaurantService {
             throw new IllegalArgumentException("La liste des plats et celle des quantités doivent avoir la même taille.");
         }
 
-        RestaurantOrder order = new RestaurantOrder(
+        var order = new RestaurantOrder(
                 0, guest, roomOrNull, null, new ArrayList<>(), OrderStatus.IN_PREPARATION, LocalDateTime.now()
         );
 
@@ -40,11 +40,11 @@ public class RestaurantService {
 
         Map<Ingredient, Double> totalRequiredIngredients = new HashMap<>();
         for (int i = 0; i < dishes.size(); i++) {
-            Dish dish = dishes.get(i);
+            var dish = dishes.get(i);
             int dishQuantity = quantities.get(i);
 
             for (Map.Entry<Ingredient, Double> entry : dish.getRequiredIngredients().entrySet()) {
-                Ingredient ingredient = entry.getKey();
+                var ingredient = entry.getKey();
                 double qtyPerDish = entry.getValue();
                 double totalQtyForThisLine = qtyPerDish * dishQuantity;
 
@@ -56,7 +56,7 @@ public class RestaurantService {
         }
 
         for (Map.Entry<Ingredient, Double> entry : totalRequiredIngredients.entrySet()) {
-            Ingredient ingredient = entry.getKey();
+            var ingredient = entry.getKey();
             double totalRequired = entry.getValue();
 
             if (ingredient.getStockQuantity() < totalRequired) {
@@ -72,7 +72,7 @@ public class RestaurantService {
                 String updateIngredientSql = "UPDATE ingredient SET stock_quantity = ? WHERE id = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(updateIngredientSql)) {
                     for (Map.Entry<Ingredient, Double> entry : totalRequiredIngredients.entrySet()) {
-                        Ingredient ingredient = entry.getKey();
+                        var ingredient = entry.getKey();
                         double totalRequired = entry.getValue();
 
                         ingredient.decreaseStock(totalRequired);
@@ -101,7 +101,7 @@ public class RestaurantService {
     }
 
     public void assignCook(int orderId, Cook c) {
-        RestaurantOrder order = restaurantOrderDAO.findById(orderId)
+        var order = restaurantOrderDAO.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Commande introuvable avec l'id : " + orderId));
 
         employeeDAO.findById(c.getId())
@@ -114,7 +114,7 @@ public class RestaurantService {
     }
 
     public void completeOrder(int orderId) {
-        RestaurantOrder order = restaurantOrderDAO.findById(orderId)
+        var order = restaurantOrderDAO.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Commande introuvable avec l'id : " + orderId));
 
         order.markAsReady();

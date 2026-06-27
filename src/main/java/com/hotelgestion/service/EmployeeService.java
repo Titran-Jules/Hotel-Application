@@ -26,13 +26,13 @@ public class EmployeeService {
     }
 
     public void assignCleanerToRoom(int cleanerId, int roomId) {
-        Employee employee = employeeDAO.findById(cleanerId)
+        var employee = employeeDAO.findById(cleanerId)
                 .orElseThrow(() -> new RuntimeException("Employé non trouvé avec id " + cleanerId));
         if (!(employee instanceof Cleaner)) {
             throw new IllegalArgumentException("L'employé avec l'id " + cleanerId + " n'est pas un Cleaner.");
         }
-        Cleaner cleaner = (Cleaner) employee;
-        Room room = roomDAO.findById(roomId)
+        var cleaner = (Cleaner) employee;
+        var room = roomDAO.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Chambre non trouvée avec l'id " + roomId));
         Connection conn = DatabaseConnection.getConnection();
         try {
