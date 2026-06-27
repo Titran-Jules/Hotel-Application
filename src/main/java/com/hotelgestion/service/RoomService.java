@@ -23,7 +23,7 @@ public class RoomService {
     }
 
     public void changeStatus(int roomId, RoomStatus status) {
-        Room room = roomDAO.findById(roomId)
+        var room = roomDAO.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Chambre introuvable "+ roomId));
 
         room.changesStatus(status);
