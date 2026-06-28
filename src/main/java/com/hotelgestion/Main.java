@@ -73,7 +73,7 @@ public class Main {
             restaurantOrderDAO = new RestaurantOrderDAO();
             roomDAO = new RoomDAO();
 
-            roomService = new RoomService(roomDAO);
+            roomService = new RoomService(hotelDAO, roomDAO);
             reservationService = new ReservationService(reservationDAO, roomDAO);
             restaurantService = new RestaurantService(restaurantOrderDAO, employeeDAO);
             paymentService = new PaymentService(paymentDAO, invoiceDAO, reservationDAO);
@@ -124,14 +124,11 @@ public class Main {
             if (role.equals("GUEST")) {
                 guestDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Client inconnu."));
             } else if (role.equals("MANAGER")) {
-                Employee emp = employeeDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Employé inconnu."));
-                if (!(emp instanceof Manager)) throw new SecurityException("Cet ID n'est pas un Manager.");
+                var emp = (Manager) employeeDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Employé inconnu."));
             } else if (role.equals("COOK")) {
-                Employee emp = employeeDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Employé inconnu."));
-                if (!(emp instanceof Cook)) throw new SecurityException("Cet ID n'est pas un Cuisinier.");
+                var emp = (Cook) employeeDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Employé inconnu."));
             } else if (role.equals("CLEANER")) {
-                Employee emp = employeeDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Employé inconnu."));
-                if (!(emp instanceof Cleaner)) throw new SecurityException("Cet ID n'est pas un Nettoyeur.");
+                var emp = (Cleaner) employeeDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Employé inconnu."));
             }
 
             System.out.println("✅ Connexion réussie !");
@@ -148,7 +145,7 @@ public class Main {
     }
 
     private static void guestMenu(int guestId) {
-        Guest guest = guestDAO.findById(guestId)
+        var guest = guestDAO.findById(guestId)
                 .orElseThrow(() -> new EntityNotFoundException("Client introuvable avec l'ID : " + guestId));
 
         System.out.println("\n✨ Bienvenue à Lemuri Hotel, " + guest.getName() + " !");
@@ -184,7 +181,7 @@ public class Main {
                         System.out.print("Entrez l'ID de la chambre à réserver : ");
                         int roomId = readIntegerInput();
 
-                        Room room = roomDAO.findById(roomId)
+                        var room = roomDAO.findById(roomId)
                                 .orElseThrow(() -> new EntityNotFoundException("Chambre introuvable."));
 
                         System.out.print("Date d'arrivée (Format AAAA-MM-JJ, ex: 2026-06-25) : ");
@@ -193,9 +190,9 @@ public class Main {
                         System.out.print("Date de départ (Format AAAA-MM-JJ, ex: 2026-06-30) : ");
                         LocalDate checkOut = LocalDate.parse(scanner.nextLine());
 
-                        simulatedLoading("Vérification des disponibilités et calcul des taxes");
+                        simulatedLoading("Vérification des disponibilités");
 
-                        Reservation res = reservationService.createReservation(guest, room, checkIn, checkOut);
+                        var res = reservationService.createReservation(guest, room, checkIn, checkOut);
 
                         System.out.println("\n🎉 Succès ! Réservation enregistrée.");
                         System.out.printf("   ID Réservation : %d | Prix Total : %.2f Ar | Statut : %s\n",
@@ -224,7 +221,7 @@ public class Main {
 
                         System.out.print("\nEntrez l'ID du plat choisi : ");
                         int dishId = readIntegerInput();
-                        Dish selectedDish = dishDAO.findById(dishId)
+                        var selectedDish = dishDAO.findById(dishId)
                                 .orElseThrow(() -> new EntityNotFoundException("Plat introuvable."));
 
                         System.out.print("Quantité souhaitée : ");
@@ -245,7 +242,7 @@ public class Main {
 
                         simulatedLoading("Vérification des stocks en cuisine en temps réel");
 
-                        RestaurantOrder order = restaurantService.placeOrder(
+                        var order = restaurantService.placeOrder(
                                 guest, deliveryRoom, List.of(selectedDish), List.of(quantity)
                         );
 
@@ -267,14 +264,14 @@ public class Main {
     }
 
     private static void managerMenu(int managerId) {
-        Employee employee = employeeDAO.findById(managerId)
+        var employee = employeeDAO.findById(managerId)
                 .orElseThrow(() -> new EntityNotFoundException("Employé introuvable."));
 
         if (!(employee instanceof Manager)) {
             System.out.println("❌ Accès refusé. Cet identifiant n'appartient pas à un Manager.");
             return;
         }
-        Manager currentManager = (Manager) employee;
+        var currentManager = (Manager) employee;
 
         System.out.println("\n💼 Bonjour Manager " + currentManager.getName() + ".");
 
@@ -294,7 +291,7 @@ public class Main {
                     List<Reservation> pendings = reservationDAO.findByStatus(ReservationStatus.PENDING);
 
                     if (pendings.isEmpty()) {
-                        System.out.println("✨ Félicitations, aucune réservation n'est en attente !");
+                        System.out.println("✨ Aucune réservation n'est en attente !");
                     } else {
                         System.out.println("\n--- DOSSIERS EN ATTENTE DE VALIDATION ---");
                         for (Reservation res : pendings) {
@@ -312,17 +309,17 @@ public class Main {
                         reservationService.validateReservation(resId, currentManager);
                         System.out.println("✅ Réservation approuvée par le Manager !");
 
-                        Reservation reservationToPay = reservationDAO.findById(resId).orElseThrow();
+                        var reservationToPay = reservationDAO.findById(resId).orElseThrow();
 
                         System.out.println("\nMode de règlement requis :");
                         System.out.println("1. Carte Bancaire");
                         System.out.println("2. Espèces");
                         System.out.print("Sélection : ");
                         int payMethod = readIntegerInput();
-                        PaymentMethode method = (payMethod == 1) ? PaymentMethode.CARD : PaymentMethode.CASH;
+                        var method = (payMethod == 1) ? PaymentMethode.CARD : PaymentMethode.CASH;
 
                         simulatedLoading("Interconnexion avec le terminal bancaire & génération de la facture");
-                        Payment payment = paymentService.processPayment(reservationToPay, method);
+                        var payment = paymentService.processPayment(reservationToPay, method);
 
                         System.out.println("\n💳 Facture acquittée avec succès !");
                         System.out.println("   ID Paiement : " + payment.getId() + " | Statut : " + payment.getStatus());
@@ -335,7 +332,7 @@ public class Main {
                 }
                 case 3 -> {
                     System.out.print("Calcul des charges salariales de l'hôtel... ");
-                    simulatedLoading("Exécution de la requête agrégée (Stream/SQL)");
+                    simulatedLoading("Exécution de la requête");
 
                     double payroll = employeeService.calculateTotalPayroll(1);
                     System.out.printf("\n📊 Masse salariale brute de l'établissement : %.2f Ar / mois.\n", payroll);
@@ -347,14 +344,14 @@ public class Main {
     }
 
     private static void cookMenu(int cookId) {
-        Employee employee = employeeDAO.findById(cookId)
+        var employee = employeeDAO.findById(cookId)
                 .orElseThrow(() -> new EntityNotFoundException("Employé introuvable."));
 
         if (!(employee instanceof Cook)) {
             System.out.println("❌ Accès refusé. Cet identifiant n'est pas lié à un poste en cuisine.");
             return;
         }
-        Cook currentCook = (Cook) employee;
+        var currentCook = (Cook) employee;
 
         System.out.println("\n👨‍🍳 Chef " + currentCook.getName() + " connecté. Spécialité : " + currentCook.getSpeciality());
 
@@ -374,7 +371,7 @@ public class Main {
                     List<RestaurantOrder> activeOrders = restaurantOrderDAO.findByStatus(OrderStatus.IN_PREPARATION);
 
                     if (activeOrders.isEmpty()) {
-                        System.out.println("☕ Calme plat en cuisine. Aucune commande en cours.");
+                        System.out.println("☕ Aucune commande en cours.");
                     } else {
                         System.out.println("\n--- BONS DE COMMANDE EN CUISINE ---");
                         for (RestaurantOrder order : activeOrders) {
@@ -418,7 +415,7 @@ public class Main {
     }
 
     private static void cleanerMenu(int cleanerId) {
-        Employee employee = employeeDAO.findById(cleanerId)
+        var employee = employeeDAO.findById(cleanerId)
                 .orElseThrow(() -> new EntityNotFoundException("Employé introuvable."));
 
         if (!(employee instanceof Cleaner)) {
@@ -443,7 +440,7 @@ public class Main {
                     List<Room> dirtyRooms = roomDAO.findByStatus(RoomStatus.CLEANING);
 
                     if (dirtyRooms.isEmpty()) {
-                        System.out.println("✨ Toutes les chambres sont impeccables ! Beau travail.");
+                        System.out.println("✨ Toutes les chambres sont impeccables !");
                     } else {
                         System.out.println("\n--- CHAMBRES EN ATTENTE DE NETTOYAGE ---");
                         for (Room r : dirtyRooms) {

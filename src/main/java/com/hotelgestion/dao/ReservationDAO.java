@@ -152,10 +152,10 @@ public class ReservationDAO implements GenericDAO<Reservation, Integer> {
     }
 
     private Reservation mapRow(ResultSet rs) throws SQLException {
-        Room room = roomDAO.findById(rs.getInt("room_id"))
+        var room = roomDAO.findById(rs.getInt("room_id"))
                 .orElseThrow(() -> new RuntimeException("Chambre introuvable pour la réservation"));
 
-        Guest guest = guestDAO.findById(rs.getInt("guest_id"))
+        var guest = guestDAO.findById(rs.getInt("guest_id"))
                 .orElseThrow(() -> new RuntimeException("Client introuvable pour la réservation"));
 
         return new Reservation(

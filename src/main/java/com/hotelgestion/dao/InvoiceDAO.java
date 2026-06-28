@@ -141,7 +141,7 @@ public class InvoiceDAO implements GenericDAO<Invoice, Integer> {
     }
 
     private Invoice mapRow(ResultSet rs) throws SQLException {
-        Reservation res = reservationDAO.findById(rs.getInt("reservation_id")).orElse(null);
+        var res = reservationDAO.findById(rs.getInt("reservation_id")).orElse(null);
         int invoiceId = rs.getInt("id");
         return new Invoice(
                 invoiceId,
