@@ -99,7 +99,7 @@ public class HotelDAO implements GenericDAO<Hotel, Integer> {
         Optional<Hotel> hotelOpt = findById(id);
 
         if (hotelOpt.isPresent()) {
-            Hotel hotel = hotelOpt.get();
+            var hotel = hotelOpt.get();
 
             List<Room> rooms = roomDAO.findByHotelId(id);
             hotel.setRooms(rooms);
@@ -114,20 +114,7 @@ public class HotelDAO implements GenericDAO<Hotel, Integer> {
     }
 
     private List<Employee> findEmployeesByHotelId(int hotelId) {
-        String sql = "SELECT id FROM employee WHERE hotel_id = ?";
-        List<Employee> employees = new ArrayList<>();
-        Connection conn = DatabaseConnection.getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, hotelId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    employeeDAO.findById(rs.getInt("id")).ifPresent(employees::add);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors du chargement des employés pour l'hôtel " + hotelId, e);
-        }
-        return employees;
+       return employeeDAO.findByHotelId(hotelId);
     }
 
     private Hotel mapRow(ResultSet rs) throws SQLException {

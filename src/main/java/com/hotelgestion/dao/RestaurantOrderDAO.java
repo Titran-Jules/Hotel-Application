@@ -149,7 +149,7 @@ public class RestaurantOrderDAO implements GenericDAO<RestaurantOrder, Integer> 
             stmt.setInt(1, orderId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Dish dish = dishDAO.findById(rs.getInt("dish_id")).orElse(null);
+                    var dish = dishDAO.findById(rs.getInt("dish_id")).orElse(null);
                     lines.add(new OrderLine(
                             rs.getInt("id"),
                             dish,
@@ -166,12 +166,12 @@ public class RestaurantOrderDAO implements GenericDAO<RestaurantOrder, Integer> 
 
     private RestaurantOrder mapRow(ResultSet rs) throws SQLException {
         int guestId = rs.getInt("guest_id");
-        Guest guest = guestDAO.findById(guestId).orElse(null);
+        var guest = guestDAO.findById(guestId).orElse(null);
         int roomId = rs.getInt("room_id");
-        Room room = rs.wasNull() ? null : roomDAO.findById(roomId).orElse(null);
+        var room = rs.wasNull() ? null : roomDAO.findById(roomId).orElse(null);
 
         int cookId = rs.getInt("cook_id");
-        Cook cook = rs.wasNull() ? null : (Cook) employeeDAO.findById(cookId).orElse(null);
+        var cook = rs.wasNull() ? null : (Cook) employeeDAO.findById(cookId).orElse(null);
 
         int orderId = rs.getInt("id");
         return new RestaurantOrder(

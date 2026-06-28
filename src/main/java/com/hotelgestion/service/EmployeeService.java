@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class EmployeeService {
+
     private final EmployeeDAO employeeDAO;
     private final RoomDAO roomDAO;
 
@@ -52,7 +53,7 @@ public class EmployeeService {
         }
     }
 
-    public Employee hire(Employee e) {
-        return employeeDAO.create(e);
+    public Employee hire(Employee e, int managerId, int hotelId) {
+        return employeeDAO.create(e, managerId, hotelId);
     }
 }

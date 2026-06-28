@@ -137,7 +137,7 @@ public class MenuDAO implements GenericDAO<Menu, Integer> {
     private Menu mapRow(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
 
-        Menu menu = new Menu();
+        var menu = new Menu();
         menu.setId(id);
         menu.setName(rs.getString("name"));
         menu.setHotelId(rs.getInt("hotel_id"));

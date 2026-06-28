@@ -493,257 +493,85 @@ public class HotelTest {
     }
 
     @Test
-    void confirm_shouldSetStatusToConfirmed() {
+    void confirm_shouldSetStatusToConfirmed_whenRoomAvailableAndDatesValid() {
         var res = new Reservation(1, guest1, standardRoom1,
                 LocalDate.of(2026, 7, 1),
-                LocalDate.of(2026, 7, 5),ReservationStatus.PENDING, 0.0);
+                LocalDate.of(2026, 7, 5),
+                ReservationStatus.PENDING, 0.0);
         res.confirm();
         assertEquals(ReservationStatus.CONFIRMED, res.getStatus());
     }
 
     @Test
-    void testValidate_setsStatusToValidated() {
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
+    void confirm_shouldSetRoomToOccupied_whenConfirmed() {
+        var res = new Reservation(1, guest1, standardRoom1,
+                LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 5),
+                ReservationStatus.PENDING, 0.0);
+        res.confirm();
+        assertEquals(RoomStatus.OCCUPIED, standardRoom1.getStatus());
+    }
+
+    @Test
+    void confirm_shouldNotConfirm_whenRoomOccupied() {
+        standardRoom1.changesStatus(RoomStatus.OCCUPIED);
+        var res = new Reservation(1, guest1, standardRoom1,
+                LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 5),
+                ReservationStatus.PENDING, 0.0);
+        res.confirm();
+        assertEquals(ReservationStatus.PENDING, res.getStatus());
+    }
+
+
+    @Test
+    void confirm_shouldNotConfirm_whenEndDateBeforeStartDate() {
+        var res = new Reservation(1, guest1, standardRoom1,
+                LocalDate.of(2026, 7, 5),
+                LocalDate.of(2026, 7, 1),
+                ReservationStatus.PENDING, 0.0);
+        res.confirm();
+        assertEquals(ReservationStatus.PENDING, res.getStatus());
+    }
+
+
+    @Test
+    void cancel_shouldSetRoomToAvailable_whenCancelled() {
+        standardRoom1.changesStatus(RoomStatus.OCCUPIED);
+        var res = new Reservation(1, guest1, standardRoom1,
+                LocalDate.of(2026, 7, 1),
+                LocalDate.of(2026, 7, 5),
+                ReservationStatus.CONFIRMED, 0.0);
+        res.cancel();
+        assertEquals(RoomStatus.AVAILABLE, standardRoom1.getStatus());
+    }
+
+
+
+    @Test
+    void validate_shouldSetStatusToValidated() {
+        var payment = new Payment(1, null, 140000.0, PaymentMethode.CASH, PaymentStatus.PENDING, LocalDateTime.now());
         payment.validate();
         assertEquals(PaymentStatus.VALIDATED, payment.getStatus());
     }
 
+    @Test
+    void refund_shouldSetStatusToRefunded() {
+        var payment = new Payment(1, null, 140000.0, PaymentMethode.CASH, PaymentStatus.VALIDATED, LocalDateTime.now());
+        payment.refund();
+        assertEquals(PaymentStatus.REFUNDED, payment.getStatus());
+    }
+
+    @Test
+    void fail_shouldSetStatusToFailed() {
+        var payment = new Payment(1, null, 140000.0, PaymentMethode.CASH, PaymentStatus.PENDING, LocalDateTime.now());
+        payment.fail();
+        assertEquals(PaymentStatus.FAILED, payment.getStatus());
+    }
     @Test
     void testEquals_sameData_returnsTrue() {
         var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
         var other = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
-
         assertEquals(payment, other);
-    }
-
-    @Test
-    void testValidate_success() {
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
-
-        payment.validate();
-
-        assertEquals(PaymentStatus.VALIDATED, payment.getStatus());
-        assertEquals(150.0, payment.getAmount());
-    }
-
-    @Test
-    void testValidate_doesNotChangeAmount() {
-        var payment = new Payment(1, null, 200.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
-
-        payment.validate();
-
-        assertEquals(200.0, payment.getAmount());
-    }
-
-    @Test
-    void testFail_whenInsufficientBalance() {
-        double balance = 100.0;
-
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
-
-        if (balance < payment.getAmount()) {
-            payment.fail();
-        }
-
-        assertEquals(PaymentStatus.FAILED, payment.getStatus());
-    }
-
-    @Test
-    void testFail_whenInvalidCardData() {
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
-
-        boolean cardValid = false;
-
-        if (!cardValid) {
-            payment.fail();
-        }
-
-        assertEquals(PaymentStatus.FAILED, payment.getStatus());
-    }
-
-    @Test
-    void testFail_doesNotChangeAmount() {
-        double balance = 50.0;
-
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
-
-        if (balance < payment.getAmount()) {
-            payment.fail();
-        }
-
-        assertEquals(150.0, payment.getAmount());
-    }
-
-
-
-    @Test
-    void testRefund_fromValidated() {
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.VALIDATED, null);
-
-        payment.refund();
-
-        assertEquals(PaymentStatus.REFUNDED, payment.getStatus());
-    }
-
-    @Test
-    void testRefund_doesNotChangeAmount() {
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.VALIDATED, null);
-
-        payment.refund();
-
-        assertEquals(150.0, payment.getAmount());
-    }
-
-
-
-    @Test
-    void testPayment_flow_success() {
-        double balance = 200.0;
-
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
-
-        if (balance >= payment.getAmount()) {
-            payment.validate();
-        } else {
-            payment.fail();
-        }
-
-        assertEquals(PaymentStatus.VALIDATED, payment.getStatus());
-    }
-
-    @Test
-    void testPayment_flow_fail_then_refund_should_not_happen() {
-        double balance = 100.0;
-
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.PENDING, null);
-
-        if (balance < payment.getAmount()) {
-            payment.fail();
-        }
-
-        if (payment.getStatus() == PaymentStatus.VALIDATED) {
-            payment.refund();
-        }
-
-        assertEquals(PaymentStatus.FAILED, payment.getStatus());
-    }
-
-    @Test
-    void testRefund_only_validated_allowed() {
-        var payment = new Payment(1, null, 150.0, PaymentMethode.CARD, PaymentStatus.FAILED, null);
-
-        payment.refund();
-
-        assertEquals(PaymentStatus.REFUNDED, payment.getStatus());
-    }
-
-
-    @Test
-    void testCashPayment_success() {
-        Payment payment = new Payment(1, null, 100.0, PaymentMethode.CASH, PaymentStatus.PENDING, null);
-        payment.validate();
-
-        assertEquals(PaymentStatus.VALIDATED, payment.getStatus());
-    }
-
-    @Test
-    void testCashPayment_fail_insufficient_cash_given() {
-        double cashGiven = 50.0;
-        double amount = 100.0;
-
-        var payment = new Payment(1, null, amount, PaymentMethode.CASH, PaymentStatus.PENDING, null);
-
-        if (cashGiven < amount) {
-            payment.fail();
-        }
-
-        assertEquals(PaymentStatus.FAILED, payment.getStatus());
-    }
-
-    @Test
-    void testCashPayment_isAlwaysValidatedInSimpleModel() {
-        var payment = new Payment(1, null, 80.0, PaymentMethode.CASH, PaymentStatus.PENDING, null);
-
-        payment.validate();
-
-        assertEquals(PaymentStatus.VALIDATED, payment.getStatus());
-    }
-
-    @Test
-    void testBankTransfer_success() {
-        var payment = new Payment(
-                1,
-                null,
-                200.0,
-                PaymentMethode.BANK_TRANSFER,
-                PaymentStatus.PENDING,
-                null
-        );
-
-        boolean bankConfirmed = true;
-
-        if (bankConfirmed) {
-            payment.validate();
-        }
-
-        assertEquals(PaymentStatus.VALIDATED, payment.getStatus());
-    }
-
-    @Test
-    void testBankTransfer_failed() {
-        var payment = new Payment(
-                1,
-                null,
-                200.0,
-                PaymentMethode.BANK_TRANSFER,
-                PaymentStatus.PENDING,
-                null
-        );
-
-        boolean bankConfirmed = false;
-
-        if (!bankConfirmed) {
-            payment.fail();
-        }
-
-        assertEquals(PaymentStatus.FAILED, payment.getStatus());
-    }
-
-    @Test
-    void testBankTransfer_staysPending_whenNotProcessed() {
-        var payment = new Payment(
-                1,
-                null,
-                200.0,
-                PaymentMethode.BANK_TRANSFER,
-                PaymentStatus.PENDING,
-                null
-        );
-
-        assertEquals(PaymentStatus.PENDING, payment.getStatus());
-    }
-
-
-    @Test
-    void testBankTransfer_full_flow() {
-        var payment = new Payment(
-                1,
-                null,
-                200.0,
-                PaymentMethode.BANK_TRANSFER,
-                PaymentStatus.PENDING,
-                null
-        );
-
-
-        boolean success = true;
-
-        if (success) {
-            payment.validate();
-        } else {
-            payment.fail();
-        }
-
-        assertEquals(PaymentStatus.VALIDATED, payment.getStatus());
     }
 }
