@@ -27,10 +27,22 @@ public class Reservation {
     }
 
     public void confirm() {
-        this.status = ReservationStatus.CONFIRMED;
+        if (this.status == ReservationStatus.PENDING
+                && this.room.getStatus() == RoomStatus.AVAILABLE
+                && this.startDate != null
+                && this.endDate != null
+                && this.endDate.isAfter(this.startDate)) {
+            this.status = ReservationStatus.CONFIRMED;
+            this.room.changesStatus(RoomStatus.OCCUPIED);
+        }
     }
 
-    public void cancel() {
-        this.status = ReservationStatus.CANCELLED;
+        public void cancel() {
+            if (this.status == ReservationStatus.CONFIRMED
+                    || this.status == ReservationStatus.PENDING) {
+                this.status = ReservationStatus.CANCELLED;
+                this.room.changesStatus(RoomStatus.AVAILABLE);
+            }
+
+        }
     }
-}
