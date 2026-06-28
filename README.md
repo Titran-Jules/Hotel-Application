@@ -1,4 +1,4 @@
-# -> Lemuri Hotel Mada — Hotel Management System
+# Lemuri Hotel Mada — Hotel Management System
 
 A robust, multi-role console application built in Java to streamline hotel operations, handle real-time room reservations, manage room service workflows, and aggregate staff payroll.
 

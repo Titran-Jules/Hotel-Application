@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class EmployeeDAO implements GenericDAO<Employee, Integer> {
-
     @Override
     public Employee create(Employee emp) {
+        throw new UnsupportedOperationException("Utiliser creae(Employee emp, int managerId, int hotelId");
+    }
+
+    public Employee create(Employee emp, int managerId, int hotelId) {
         String sql = """
                 INSERT INTO employee (name, phone, salary, employee_type, efficiency, patrol_zone, specialty, bonus_salary_per_hour, manager_id, hotel_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
@@ -48,12 +51,12 @@ public class EmployeeDAO implements GenericDAO<Employee, Integer> {
                 stmt.setNull(8, Types.NUMERIC);
             }
 
-            if (emp.getManagerId() > 0) {
-                stmt.setInt(9, emp.getManagerId());
+            if (managerId > 0) {
+                stmt.setInt(9, managerId);
             } else {
                 stmt.setNull(9, Types.INTEGER);
             }
-            stmt.setInt(10, emp.getHotelId());
+            stmt.setInt(10, hotelId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -113,6 +116,10 @@ public class EmployeeDAO implements GenericDAO<Employee, Integer> {
 
     @Override
     public boolean update(Employee emp) {
+        throw new UnsupportedOperationException("Utiliser update(Employee emp, int managerId, int hotelId");
+    }
+
+    public boolean update(Employee emp, int managerId, int hotelId) {
         String sql = """
                 UPDATE employee SET name = ?, phone = ?, salary = ?, efficacity = ?, 
                                     patrol_zone = ?, specialty = ?, bonus_salary_per_hour = ?, 
@@ -146,12 +153,12 @@ public class EmployeeDAO implements GenericDAO<Employee, Integer> {
                 stmt.setNull(7, Types.NUMERIC);
             }
 
-            if (emp.getManagerId() > 0) {
-                stmt.setInt(8, emp.getManagerId());
+            if (managerId > 0) {
+                stmt.setInt(8, managerId);
             } else {
                 stmt.setNull(8, Types.INTEGER);
             }
-            stmt.setInt(9, emp.getHotelId());
+            stmt.setInt(9, hotelId);
             stmt.setInt(10, emp.getId());
 
             return stmt.executeUpdate() > 0;
@@ -240,23 +247,24 @@ public class EmployeeDAO implements GenericDAO<Employee, Integer> {
 
         switch (empType) {
             case "MANAGER" -> {
-                Manager manager = Manager.builder().build();
+                var manager = Manager.builder().build();
+                manager.setEmployees(findManagerTeam(rs.getInt("id")));
                 emp = manager;
             }
             case "CLEANER" -> {
-                Cleaner cleaner = Cleaner.builder().build();
+                var cleaner = Cleaner.builder().build();
                 cleaner.setEfficacity(rs.getDouble("efficacity"));
                 emp = cleaner;
             }
             case "GUARD" -> {
-                Guard guard = Guard.builder().build();
+                var guard = Guard.builder().build();
                 guard.setPatrolZone(rs.getString("patrol_zone"));
                 guard.setBonusSalaryPerHour(rs.getDouble("bonus_salary_per_hour"));
                 guard.setDayGuards(findShiftsForGuard(rs.getInt("id")));
                 emp = guard;
             }
             case "COOK" -> {
-                Cook cook = Cook.builder().build();
+                var cook = Cook.builder().build();
                 cook.setSpeciality(rs.getString("specialty"));
                 emp = cook;
             }
@@ -267,8 +275,6 @@ public class EmployeeDAO implements GenericDAO<Employee, Integer> {
         emp.setName(rs.getString("name"));
         emp.setPhoneNumber(rs.getString("phone"));
         emp.setSalary(rs.getDouble("salary"));
-        emp.setHotelId(rs.getInt("hotel_id"));
-        emp.setManagerId(rs.getInt("manager_id"));
 
         return emp;
     }

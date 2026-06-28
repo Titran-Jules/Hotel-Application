@@ -11,6 +11,10 @@ import java.util.Optional;
 public class RoomDAO implements GenericDAO<Room, Integer>{
     @Override
     public Room create(Room room) {
+        throw new UnsupportedOperationException("Utiliser create(Room room, int hotelId)");
+    }
+
+    public Room create(Room room, int hotelId) {
         String sql = """
                 INSERT INTO room (room_number, base_price, bed_count, status, room_type, room_count, hotel_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id
@@ -29,8 +33,7 @@ public class RoomDAO implements GenericDAO<Room, Integer>{
                 stmt.setString(5, "STANDARD");
                 stmt.setNull(6, Types.INTEGER);
             }
-            stmt.setInt(7, room.getHotelId());
-
+            stmt.setInt(7, hotelId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     room.setId(rs.getInt("id"));
@@ -176,7 +179,7 @@ public class RoomDAO implements GenericDAO<Room, Integer>{
 
         Room room;
         if ("SUITE".equals(roomType)) {
-            SuiteRoom suite = SuiteRoom.builder().build();
+            var suite = SuiteRoom.builder().build();
             suite.setRoomCount(rs.getInt("room_count"));
             room = suite;
         } else {
@@ -188,7 +191,6 @@ public class RoomDAO implements GenericDAO<Room, Integer>{
         room.setBasePrice(rs.getDouble("base_price"));
         room.setBedCount(rs.getInt("bed_count"));
         room.setStatus(RoomStatus.valueOf(rs.getString("status")));
-        room.setHotelId(rs.getInt("hotel_id"));
         room.setAmenities(findAmenitiesForRoom(room.getId()));
 
         return room;
