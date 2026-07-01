@@ -1,5 +1,5 @@
 package com.hotelgestion.model;
 
-public enum PaymentMethode {
-    CARD, CASH, BANK_TRANSFER, REFUNDED
+public interface PaymentMethode {
+    void processPayment(double amount);
 }
