@@ -16,8 +16,7 @@ public class Guest {
     private String email;
 
     public Reservation book(Room r, LocalDate startDate, LocalDate endDate) {
-        var reservation = new Reservation(0, this, r, startDate, endDate, ReservationStatus.PENDING, 0.0);
-        reservation.setTotalPrice(reservation.calculateTotalPrice());
+        var reservation = new Reservation(0, this, r, startDate, endDate, ReservationStatus.PENDING);
         return reservation;
     }
 }

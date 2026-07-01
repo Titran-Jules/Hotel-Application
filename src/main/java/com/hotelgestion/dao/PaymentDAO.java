@@ -122,7 +122,7 @@ public class PaymentDAO implements GenericDAO<Payment, Integer> {
     private Payment mapRow(ResultSet rs) throws SQLException {
         var reservation = new Reservation(
                 rs.getInt("reservation_id"),
-                null, null, null, null, null, 0.0
+                null, null, null, null, null
         );
 
         String dbMethod = rs.getString("payment_method");

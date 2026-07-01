@@ -472,7 +472,7 @@ public class HotelTest {
     void calculateNumberOfNights() {
         var res = new Reservation(0, guest1, standardRoom1,
                 LocalDate.of(2026, 7, 1),
-                LocalDate.of(2026, 7, 5), ReservationStatus.PENDING, 0.0);
+                LocalDate.of(2026, 7, 5), ReservationStatus.PENDING);
         assertEquals(4, res.calculateNumberOfNights());
     }
 

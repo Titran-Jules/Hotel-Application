@@ -7,7 +7,6 @@ import java.time.temporal.ChronoUnit;
 
 @Data
 @AllArgsConstructor
-
 public class Reservation {
 
     private int id;
@@ -16,7 +15,6 @@ public class Reservation {
     private LocalDate startDate;
     private LocalDate endDate;
     private ReservationStatus status;
-    private double totalPrice;
 
     public long calculateNumberOfNights() {
         return ChronoUnit.DAYS.between(startDate, endDate);
@@ -37,12 +35,11 @@ public class Reservation {
         }
     }
 
-        public void cancel() {
-            if (this.status == ReservationStatus.CONFIRMED
-                    || this.status == ReservationStatus.PENDING) {
-                this.status = ReservationStatus.CANCELLED;
-                this.room.changesStatus(RoomStatus.AVAILABLE);
-            }
-
+    public void cancel() {
+        if (this.status == ReservationStatus.CONFIRMED
+                || this.status == ReservationStatus.PENDING) {
+            this.status = ReservationStatus.CANCELLED;
+            this.room.changesStatus(RoomStatus.AVAILABLE);
         }
     }
+}

@@ -196,7 +196,7 @@ public class Main {
 
                         System.out.println("\n🎉 Succès ! Réservation enregistrée.");
                         System.out.printf("   ID Réservation : %d | Prix Total : %.2f Ar | Statut : %s\n",
-                                res.getId(), res.getTotalPrice(), res.getStatus());
+                                res.getId(), res.calculateTotalPrice(), res.getStatus());
                         System.out.println("   ⚠️ Note : Votre réservation est 'PENDING'. Un manager doit la valider.");
                     } catch (RoomUnavailableException e) {
                         System.out.println("\n⚠️ [ÉCHEC] " + e.getMessage());
@@ -296,7 +296,7 @@ public class Main {
                         System.out.println("\n--- DOSSIERS EN ATTENTE DE VALIDATION ---");
                         for (Reservation res : pendings) {
                             System.out.printf("- ID: %d | Client: %s | Chambre: %s | Montant: %.2f Ar\n",
-                                    res.getId(), res.getGuest().getName(), res.getRoom().getRoomNumber(), res.getTotalPrice());
+                                    res.getId(), res.getGuest().getName(), res.getRoom().getRoomNumber(), res.calculateTotalPrice());
                         }
                     }
                 }
