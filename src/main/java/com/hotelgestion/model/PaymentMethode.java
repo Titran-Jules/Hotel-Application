@@ -1,5 +1,6 @@
 package com.hotelgestion.model;
 
-public enum PaymentMethode {
-    CARD, CASH, BANK_TRANSFER, REFUNDED
+public interface PaymentMethode {
+    String getProviderName();
+    void processPayment(double amount);
 }
