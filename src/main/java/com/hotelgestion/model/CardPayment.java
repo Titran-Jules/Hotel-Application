@@ -13,6 +13,11 @@ public class CardPayment implements PaymentMethode {
     private String last4Digits;
 
     @Override
+    public String getProviderName() {
+        return "CARD";
+    }
+
+    @Override
     public void processPayment(double amount) {
         var success = BankApiSimulation.chargeCard(this.cardToken, amount);
         if (!success) {

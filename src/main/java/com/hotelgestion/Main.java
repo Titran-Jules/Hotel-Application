@@ -310,13 +310,15 @@ public class Main {
                         System.out.println("✅ Réservation approuvée par le Manager !");
 
                         var reservationToPay = reservationDAO.findById(resId).orElseThrow();
+                        String guestPhone = reservationToPay.getGuest().getPhone();
 
                         System.out.println("\nMode de règlement requis :");
                         System.out.println("1. Carte Bancaire");
                         System.out.println("2. Espèces");
+                        System.out.println("3. Mvola");
                         System.out.print("Sélection : ");
                         int payMethod = readIntegerInput();
-                        var method = (payMethod == 1) ? PaymentMethode.CARD : PaymentMethode.CASH;
+                        var method = (payMethod == 1) ?  new CardPayment("token-card", "1111") : (payMethod == 2) ? new CashPayment() : new MvolaPayment(guestPhone, "TSX-...");
 
                         simulatedLoading("Interconnexion avec le terminal bancaire & génération de la facture");
                         var payment = paymentService.processPayment(reservationToPay, method);

@@ -13,6 +13,11 @@ public class MvolaPayment implements PaymentMethode {
     private String transactionId;
 
     @Override
+    public String getProviderName() {
+        return "MVOLA";
+    }
+
+    @Override
     public void processPayment(double amount) {
         boolean pushSent = BankApiSimulation.chargeCard(this.phoneNumber, amount);
 
@@ -21,6 +26,5 @@ public class MvolaPayment implements PaymentMethode {
         }
 
         this.transactionId = "TXN-"+ System.currentTimeMillis();
-        System.out.println("[SUCCES] Mvola payé ! Ref transaction : "+ this.transactionId);
     }
 }

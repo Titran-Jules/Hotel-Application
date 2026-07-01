@@ -107,9 +107,12 @@ CREATE TABLE payment (
                          id SERIAL PRIMARY KEY,
                          reservation_id INT NOT NULL REFERENCES reservation(id) ON DELETE CASCADE,
                          amount NUMERIC(10,2) NOT NULL,
-                         payment_method VARCHAR(20) NOT NULL CHECK (payment_method IN ('CARD', 'CASH', 'BANK_TRANSFER', 'CHECK')),
+                         payment_method VARCHAR(20) NOT NULL CHECK (payment_method IN ('CARD', 'CASH', 'BANK_TRANSFER', 'CHECK', 'MVOLA')),
                          status VARCHAR(20) DEFAULT 'PENDING' NOT NULL CHECK (status IN ('PENDING', 'VALIDATED', 'FAILED', 'REFUNDED')),
-                         payment_date TIMESTAMP DEFAULT NOW() NOT NULL
+                         payment_date TIMESTAMP DEFAULT NOW() NOT NULL,
+                         card_token VARCHAR(255) DEFAULT NULL,
+                         last_4_digits VARCHAR(4) DEFAULT NULL,
+                         mvola_transaction_id VARCHAR(100) DEFAULT NULL
 );
 
 CREATE TABLE invoice (
@@ -188,7 +191,7 @@ INSERT INTO dish_ingredient (dish_id, ingredient_id, quantity_needed)
 VALUES (1, 1, 0.20), (1, 2, 0.25);
 
 INSERT INTO guest (id, name, phone, email)
-VALUES (10, 'Marianah Labelle', '+261334455566', 'marianah.labelle@example.com');
+VALUES (10, 'Jules Titran', '+261334455566', 'marianah.labelle@example.com');
 
 INSERT INTO employee (id, name, phone, salary, employee_type, manager_id, hotel_id, specialty)
 VALUES (5, 'Chef Faly', '+261345566677', 1200000.00, 'COOK', 1, 1, 'Cuisine Traditionnelle et Pizzeria');
@@ -218,6 +221,9 @@ VALUES (500, 10, 202, 5, 'READY', '2026-06-23 19:30:00');
 INSERT INTO order_line (id, order_id, dish_id, quantity, unit_price)
 VALUES (10, 500, 1, 1, 35000.00),
        (11, 500, 2, 1, 8000.00);
+
+INSERT INTO payment (id, reservation_id, amount, payment_method, status, payment_date, mvola_transaction_id)
+VALUES (51, 100, 43000.00, 'MVOLA', 'VALIDATED', '2026-06-23 19:35:00', 'TXN-1719839114000');
 
 SELECT setval('hotel_id_seq', (SELECT MAX(id) FROM hotel));
 SELECT setval('amenity_id_seq', (SELECT MAX(id) FROM amenity));

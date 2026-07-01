@@ -21,7 +21,7 @@ public class PaymentDAO implements GenericDAO<Payment, Integer> {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, payment.getReservation().getId());
             stmt.setDouble(2, payment.getAmount());
-            stmt.setString(3, payment.getPaymentMethode().name());
+            stmt.setString(3, payment.getPaymentMethode().getProviderName());
             stmt.setString(4, payment.getStatus().name());
             stmt.setTimestamp(5, Timestamp.valueOf(payment.getPaymentDate() != null ? payment.getPaymentDate() : LocalDateTime.now()));
 
@@ -79,7 +79,7 @@ public class PaymentDAO implements GenericDAO<Payment, Integer> {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, payment.getReservation().getId());
             stmt.setDouble(2, payment.getAmount());
-            stmt.setString(3, payment.getPaymentMethode().name());
+            stmt.setString(3, payment.getPaymentMethode().getProviderName());
             stmt.setString(4, payment.getStatus().name());
             stmt.setTimestamp(5, Timestamp.valueOf(payment.getPaymentDate()));
             stmt.setInt(6, payment.getId());
@@ -126,11 +126,19 @@ public class PaymentDAO implements GenericDAO<Payment, Integer> {
         );
 
         String dbMethod = rs.getString("payment_method");
-        PaymentMethode method;
+        PaymentMethode method = null;
         try {
-            method = PaymentMethode.valueOf(dbMethod);
+            if (dbMethod.equals("CASH")) {
+                method = new CashPayment();
+            }
+            else if (dbMethod.equals("CARD")) {
+                method = new CardPayment(rs.getString("card_token"), rs.getString("last_4_digits"));
+            }
+            else if (dbMethod.equals("MVOLA")) {
+                method = new MvolaPayment(reservation.getGuest().getPhone(), rs.getString("mvola_transaction_id"));
+            }
         } catch (IllegalArgumentException e) {
-            method = PaymentMethode.CASH;
+            method = new CashPayment();
         }
 
         return new Payment(
