@@ -28,7 +28,7 @@ public class ReservationDAO implements GenericDAO<Reservation, Integer> {
             stmt.setDate(3, Date.valueOf(res.getStartDate()));
             stmt.setDate(4, Date.valueOf(res.getEndDate()));
             stmt.setString(5, res.getStatus().name());
-            stmt.setDouble(6, res.getTotalPrice());
+            stmt.setDouble(6, res.calculateTotalPrice());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -87,7 +87,7 @@ public class ReservationDAO implements GenericDAO<Reservation, Integer> {
             stmt.setDate(3, Date.valueOf(res.getStartDate()));
             stmt.setDate(4, Date.valueOf(res.getEndDate()));
             stmt.setString(5, res.getStatus().name());
-            stmt.setDouble(6, res.getTotalPrice());
+            stmt.setDouble(6, res.calculateTotalPrice());
             stmt.setInt(7, res.getId());
 
             return stmt.executeUpdate() > 0;
@@ -164,8 +164,7 @@ public class ReservationDAO implements GenericDAO<Reservation, Integer> {
                 room,
                 rs.getDate("start_date").toLocalDate(),
                 rs.getDate("end_date").toLocalDate(),
-                ReservationStatus.valueOf(rs.getString("status")),
-                rs.getDouble("total_price")
+                ReservationStatus.valueOf(rs.getString("status"))
         );
     }
 

@@ -27,7 +27,6 @@ public class ReservationService {
         }
 
         var reservation = guest.book(room, startDate, endDate);
-        reservation.setTotalPrice(reservation.calculateTotalPrice());
 
         Connection conn = DatabaseConnection.getConnection();
         try {

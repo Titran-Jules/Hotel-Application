@@ -24,7 +24,7 @@ public class PaymentService {
     }
 
     public Payment processPayment(Reservation r, PaymentMethode method) {
-        var payment = new Payment(0, r, r.getTotalPrice(), method, PaymentStatus.PENDING, LocalDateTime.now());
+        var payment = new Payment(0, r, r.calculateTotalPrice(), method, PaymentStatus.PENDING, LocalDateTime.now());
 
         Connection conn = DatabaseConnection.getConnection();
         try {
@@ -33,8 +33,8 @@ public class PaymentService {
                 payment.validate();
                 payment = paymentDAO.create(payment);
 
-                var invoice = new Invoice(0, r, new ArrayList<>(), LocalDateTime.now(), r.getTotalPrice());
-                var mainLine = new InvoiceLine(0, "Séjour Chambre N° "+ r.getRoom().getRoomNumber() + " (" + r.calculateNumberOfNights() + " nuit(s)", r.getTotalPrice());
+                var invoice = new Invoice(0, r, new ArrayList<>(), LocalDateTime.now(), r.calculateTotalPrice());
+                var mainLine = new InvoiceLine(0, "Séjour Chambre N° " + r.getRoom().getRoomNumber() + " (" + r.calculateNumberOfNights() + " nuit(s)", r.calculateTotalPrice());
                 invoice.addLine(mainLine);
 
                 invoiceDAO.create(invoice);
